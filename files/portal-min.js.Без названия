@@ -956,8 +956,31 @@ $( document ).ready(function() {
             // Устанавливаем loader
             $container.html(`<div class="col loader"><span></span></div>`);
             
-            // Используем прямой запрос к оригинальному API (прокси не нужен на Railway)
-            tryDirectApiRequest($container, zone, section);
+            // Используем серверный прокси для обхода CORS
+            const proxyUrl = "/api/proxy/combinations/" + zone + "/" + section;
+            console.log('[COMBINATIONS] Requesting via proxy:', proxyUrl);
+            
+            $.ajax({
+                url: proxyUrl,
+                method: "GET",
+                dataType: "html",
+                timeout: 15000,
+                success: function (r) {
+                    if (r && r.trim().length > 0) {
+                        $container.html(r);
+                        rewriteCombinationLinks($container);
+                        console.log('[COMBINATIONS] Proxy request succeeded');
+                    } else {
+                        console.warn('[COMBINATIONS] Empty response from proxy');
+                        $container.html('');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('[COMBINATIONS] Proxy request failed:', {status, error, xhr: xhr.status});
+                    // Fallback на прямой запрос (может не сработать из-за CORS, но попробуем)
+                    tryDirectApiRequest($container, zone, section);
+                }
+            });
         });
     }
     
