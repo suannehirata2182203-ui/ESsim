@@ -956,59 +956,8 @@ $( document ).ready(function() {
             // Устанавливаем loader
             $container.html(`<div class="col loader"><span></span></div>`);
             
-            // Используем прокси
-            const apiUrl = "http://localhost:8001/api/proxy/combinations/" + zone + "/" + section;
-            console.log('[COMBINATIONS] Requesting:', apiUrl);
-            
-            // Используем нативный fetch для лучшей диагностики
-            fetch(apiUrl, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            })
-            .then(response => {
-                console.log('[COMBINATIONS] Response status:', response.status, response.statusText);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                return response.text();
-            })
-            .then(html => {
-                console.log('[COMBINATIONS] Received HTML length:', html.length);
-                if (html && html.trim().length > 0) {
-                    $container.html(html);
-                    rewriteCombinationLinks($container);
-                    console.log('[COMBINATIONS] Successfully loaded and inserted content');
-                } else {
-                    throw new Error('Empty response from proxy');
-                }
-            })
-            .catch(error => {
-                console.error('[COMBINATIONS] Fetch error:', error);
-                // Fallback на jQuery ajax
-                console.log('[COMBINATIONS] Trying jQuery ajax fallback...');
-                $.ajax({
-                    url: apiUrl,
-                    method: "GET",
-                    dataType: "html",
-                    timeout: 15000,
-                    success: function (r) {
-                        console.log('[COMBINATIONS] jQuery ajax success, length:', r ? r.length : 0);
-                        if (r && r.trim().length > 0) {
-                            $container.html(r);
-                            rewriteCombinationLinks($container);
-                        } else {
-                            // Тихая обработка - пробуем прямой запрос к API
-                            tryDirectApiRequest($container, zone, section);
-                        }
-                    },
-                    error: function (xhr, status, err) {
-                        console.error('[COMBINATIONS] jQuery ajax error:', {status, err, xhr: xhr.status});
-                        // Тихая обработка ошибки - пробуем прямой запрос к оригинальному API
-                        tryDirectApiRequest($container, zone, section);
-                    }
-                });
-            });
+            // Используем прямой запрос к оригинальному API (прокси не нужен на Railway)
+            tryDirectApiRequest($container, zone, section);
         });
     }
     
