@@ -5,7 +5,7 @@
     // Configuration
     const PAYMENT_BASE_URL = 'https://momentspay.com/connect/form';
     const DEFAULT_COUNTRY = 'ES'; // Испания
-    const DEFAULT_VAT = 21; // НДС для Испании
+    const DEFAULT_VAT = 0; // VAT передается как 0 (не 21)
     const DEFAULT_SYMBOL = 'EUR'; // Валюта для Испании
     const SITE_DOMAIN = 'momentspay.com';
 
