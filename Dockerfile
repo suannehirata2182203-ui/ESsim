@@ -8,6 +8,6 @@ COPY . .
 # Expose порт (Railway автоматически установит переменную PORT)
 EXPOSE 8000
 
-# Запускаем простой HTTP сервер
-CMD python -m http.server ${PORT:-8000}
+# Запускаем сервер через наш скрипт
+CMD python server.py
 
