@@ -1,0 +1,43 @@
+(function (mdt, $) {
+window.mdt.mcic_model_config ={
+		
+	mcicOptions:{
+		  agentName: 'Digi'
+//		, bCloseWithSurvey: true
+//		, counterHidden: 60  	// secunde in care counter-ul este hidden
+//		, counterShow:   60 	// secunde in care counterul este vizibil
+		, updateAcceptFiles: ".bmp,.gif, .png, .jpg, .jpeg, .webp, .pdf, .mp4,.m4a, .aac, .3gp, .amr,  .wav, .mp3"
+		, bQuickConnect : false
+//		, bAutoOpen: true
+//		, bFullScreen: true
+//		, custom_templates : ['//		, custom_templates : ['custom/starFeedback.js'   ]
+//		, reCAPTCHA_site_key: '...site_key...'
+//		, bubble_hide : false	 // default: false
+		, use_mqtt: false         // default: true
+
+
+// websocket implementat partial
+		, bNoWebSocket : true    //  default: false
+//		, chatLanguages : ['ES']
+//		, chatChannels : [
+//			{title: 'Telegram', link: '_ID_PAGE_'},
+//			{title: 'Facebook', link: '_ID_PAGE_'},
+//			{title: 'WhatsApp', link: '_PhoneNumber_'},
+			//{title: 'Other chat', link: 'https://otherlink', iconName:'otherIcon_mcic', style:'background-image: url(&quot;data:image/...  &quot;);'},
+//			{title: 'Chat with us'},
+//		]
+	},
+/*
+	converseOptions : {
+		  nickname : 'Ud'
+	}
+*/
+}
+
+})();
+
+window.mdt.openChatExtern = function()
+	{
+window.mdt.clickOnBubbleTime = (new Date()).getTime();
+window.mdt.openChat();
+	};

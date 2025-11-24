@@ -1,0 +1,119 @@
+/* Custom styles for tariff calculator */
+
+/* Reset all fiber cards first */
+[data-product-type="fiber"] > .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e0e0 !important;
+    background-color: white !important;
+    box-shadow: none !important;
+}
+
+[data-product-type="fiber"] > .card:hover {
+    border-color: #002BFF !important;
+    box-shadow: 0 2px 8px rgba(0, 43, 255, 0.2) !important;
+}
+
+/* Active fiber card styling - HIGHEST PRIORITY */
+[data-product-type="fiber"].active > .card {
+    border: 3px solid #002BFF !important;
+    background-color: #e6f0ff !important;
+    box-shadow: 0 0 15px rgba(0, 43, 255, 0.3) !important;
+}
+
+[data-product-type="fiber"].active > .card > .card-body {
+    background-color: #e6f0ff !important;
+}
+
+/* Active checkbox styling */
+[data-product-type="fiber"].active input[type="checkbox"]:checked {
+    accent-color: #002BFF;
+}
+
+/* Make selected card text bold */
+[data-product-type="fiber"].active .info span {
+    font-weight: 700 !important;
+    color: #002BFF !important;
+}
+
+/* Remove bold/color from non-active cards */
+[data-product-type="fiber"]:not(.active) .info span {
+    font-weight: normal !important;
+    color: inherit !important;
+}
+
+/* TV and other product cards */
+[data-category="tv"] .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e0e0;
+}
+
+[data-category="tv"] .card:hover {
+    box-shadow: 0 2px 8px rgba(0, 43, 255, 0.15);
+    border-color: #002BFF;
+}
+
+/* Selected TV card */
+[data-category="tv"].selected .card,
+[data-category="tv"] input[type="checkbox"]:checked ~ .card,
+[data-category="tv"]:has(input[type="checkbox"]:checked) .card {
+    border: 2px solid #002BFF !important;
+    background-color: #f0f4ff !important;
+}
+
+/* Make selected TV text bold */
+[data-category="tv"]:has(input[type="checkbox"]:checked) .info span {
+    font-weight: 700;
+    color: #002BFF;
+}
+
+/* Homeline (phone) cards */
+[data-category="fijo"] .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e0e0;
+}
+
+[data-category="fijo"] .card:hover {
+    box-shadow: 0 2px 8px rgba(0, 43, 255, 0.15);
+    border-color: #002BFF;
+}
+
+/* Selected homeline card */
+[data-category="fijo"].selected .card {
+    border: 2px solid #002BFF !important;
+    background-color: #f0f4ff !important;
+}
+
+[data-category="fijo"].selected .info span {
+    font-weight: 700;
+    color: #002BFF;
+}
+
+.product_col .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product_col .card:hover {
+    box-shadow: 0 2px 8px rgba(0, 43, 255, 0.15);
+}
+
+/* Mobile rows with selected items (counter > 0) */
+.product_row.selected {
+    border: 2px solid #002BFF;
+    background-color: #f0f4ff;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+.product_row {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 4px 0;
+}
+
