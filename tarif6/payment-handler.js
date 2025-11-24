@@ -97,19 +97,13 @@
             amount: totalPrice.toFixed(2),
             symbol: DEFAULT_SYMBOL,
             vat: DEFAULT_VAT,
-            redirect_success: baseUrl + '/success',
-            redirect_failed: baseUrl + '/failed',
-            redirect_back: currentUrl,
+            riderect_success: baseUrl + '/success',  // Note: original uses "riderect" (typo in API)
+            riderect_failed: baseUrl + '/failed',
+            riderect_back: currentUrl,
             order_id: orderId,
-            billing_country: DEFAULT_COUNTRY,
-            billing_first_name: '',
-            billing_last_name: '',
-            billing_address_1: '',
-            billing_city: '',
-            billing_state: '',
-            billing_postcode: '',
-            billing_email: '',
-            billing_phone: ''
+            billing_country: DEFAULT_COUNTRY
+            // Do NOT include image/icon as per user request
+            // billing_first_name, etc. are optional and can be empty
         });
 
         return PAYMENT_BASE_URL + '?' + params.toString();
