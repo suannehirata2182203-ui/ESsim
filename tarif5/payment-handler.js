@@ -25,6 +25,23 @@
                 return price;
             }
         }
+        
+        // Try price-container without data-price but with .money inside
+        const priceContainer2 = document.querySelector('.price-container');
+        if (priceContainer2) {
+            const moneyElement = priceContainer2.querySelector('.money');
+            if (moneyElement) {
+                const text = moneyElement.textContent || moneyElement.innerText;
+                const match = text.match(/(\d+(?:[.,]\d+)?)/);
+                if (match) {
+                    const price = parseFloat(match[1].replace(',', '.'));
+                    if (!isNaN(price) && price > 0) {
+                        console.log('[PAYMENT] Price from .money:', price);
+                        return price;
+                    }
+                }
+            }
+        }
 
         // Try to find price in different possible locations
         const priceSelectors = [
@@ -120,6 +137,18 @@
         return false;
     }
 
+    // Find buttons by text content (helper function)
+    function findButtonsByText(text) {
+        const allButtons = document.querySelectorAll('a, button');
+        const matches = [];
+        for (let btn of allButtons) {
+            if (btn.textContent && btn.textContent.trim().toUpperCase().includes(text.toUpperCase())) {
+                matches.push(btn);
+            }
+        }
+        return matches;
+    }
+
     // Initialize payment handlers
     function init() {
         console.log('[PAYMENT] Initializing payment handlers...');
@@ -130,29 +159,91 @@
             return;
         }
 
-        // Find all payment buttons
-        const paymentButtons = [
-            document.getElementById('cta_configurador_contratar'),
-            document.getElementById('config_loquiero'),
-            ...document.querySelectorAll('a[data-click="shop"]'),
-            ...document.querySelectorAll('a:contains("LO QUIERO")'),
-            ...document.querySelectorAll('button:contains("LO QUIERO")')
-        ].filter(btn => btn !== null);
+        // Find all payment buttons using multiple methods
+        const paymentButtons = new Set();
+        
+        // By ID
+        const btn1 = document.getElementById('cta_configurador_contratar');
+        const btn2 = document.getElementById('config_loquiero');
+        if (btn1) paymentButtons.add(btn1);
+        if (btn2) paymentButtons.add(btn2);
+        
+        // By data-click attribute
+        document.querySelectorAll('a[data-click="shop"], button[data-click="shop"]').forEach(btn => {
+            paymentButtons.add(btn);
+        });
+        
+        // By text content "LO QUIERO"
+        findButtonsByText('LO QUIERO').forEach(btn => {
+            paymentButtons.add(btn);
+        });
 
-        console.log('[PAYMENT] Found', paymentButtons.length, 'payment buttons');
+        const buttonsArray = Array.from(paymentButtons);
+        console.log('[PAYMENT] Found', buttonsArray.length, 'payment buttons');
 
         // Attach click handlers
-        paymentButtons.forEach(button => {
+        buttonsArray.forEach(button => {
             if (button) {
-                button.addEventListener('click', handlePaymentClick);
-                console.log('[PAYMENT] Handler attached to:', button.id || button.className);
+                // Remove any existing handlers to avoid duplicates
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                newButton.addEventListener('click', handlePaymentClick);
+                console.log('[PAYMENT] Handler attached to:', newButton.id || newButton.className || newButton.textContent.trim());
             }
         });
 
-        // Also use jQuery if available (for dynamic buttons)
+        // Also use jQuery if available (for dynamic buttons and event delegation)
         if (typeof $ !== 'undefined') {
-            $(document).on('click', '#cta_configurador_contratar, #config_loquiero, a[data-click="shop"]', handlePaymentClick);
-            console.log('[PAYMENT] jQuery handlers attached');
+            // Use event delegation for dynamically added buttons
+            $(document).on('click', '#cta_configurador_contratar, #config_loquiero, a[data-click="shop"], button[data-click="shop"]', handlePaymentClick);
+            
+            // Also catch buttons with "LO QUIERO" text
+            $(document).on('click', 'a, button', function(e) {
+                const text = $(this).text().trim().toUpperCase();
+                if (text.includes('LO QUIERO')) {
+                    handlePaymentClick(e);
+                }
+            });
+            
+            console.log('[PAYMENT] jQuery handlers attached with event delegation');
+        }
+        
+        // Use MutationObserver to catch dynamically added buttons
+        if (typeof MutationObserver !== 'undefined') {
+            const observer = new MutationObserver(function(mutations) {
+                let shouldReinit = false;
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.id === 'cta_configurador_contratar' || 
+                                node.id === 'config_loquiero' ||
+                                node.getAttribute('data-click') === 'shop' ||
+                                (node.textContent && node.textContent.trim().toUpperCase().includes('LO QUIERO'))) {
+                                shouldReinit = true;
+                            }
+                            // Check children
+                            if (node.querySelector && (
+                                node.querySelector('#cta_configurador_contratar') ||
+                                node.querySelector('#config_loquiero') ||
+                                node.querySelector('[data-click="shop"]')
+                            )) {
+                                shouldReinit = true;
+                            }
+                        }
+                    });
+                });
+                if (shouldReinit) {
+                    console.log('[PAYMENT] New payment buttons detected, reinitializing...');
+                    setTimeout(init, 100);
+                }
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            console.log('[PAYMENT] MutationObserver attached');
         }
     }
 
