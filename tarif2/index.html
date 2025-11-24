@@ -3755,5 +3755,30 @@
     <link rel="stylesheet" href="./custom-styles.css">
     <script src="./tarif-calculator.js"></script>
     <script src="./payment-handler.js"></script>
+    
+    <!-- Fix for "¿TE LLAMAMOS?" button redirect -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Перехватываем клик на кнопку "¿TE LLAMAMOS?" и перенаправляем на правильный URL
+            $('#menu_c2c_desktop').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = 'https://dlgmobil.com/';
+                return false;
+            });
+            
+            // Также перехватываем клики на элементы с классом btn-c2c
+            $(document).on('click', '.btn-c2c', function(e) {
+                const href = $(this).attr('href');
+                if (href && href.includes('dlgmobil.com')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = 'https://dlgmobil.com/';
+                    return false;
+                }
+            });
+        });
+    </script>
 
 </body></html>
