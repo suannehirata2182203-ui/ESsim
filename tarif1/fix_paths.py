@@ -22,3 +22,4 @@ with open(output_file, 'w', encoding='utf-8') as f:
 print(f"Done! Created {output_file}")
 print(f"Original file size: {len(content)} characters")
 
+

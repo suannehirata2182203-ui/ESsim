@@ -430,3 +430,4 @@ function updateDisplay(total) {
 ❌ Не проверять `isNaN(price)` после `parseFloat()`
 ✅ Всегда проверять: `if (!isNaN(price) && price > 0)`
 
+

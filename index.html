@@ -1684,6 +1684,54 @@
         });
     </script>
     
+    <!-- Disable all buttons and links except those in the combinations section -->
+    <script>
+        $(document).ready(function() {
+            // Отключаем все кнопки и ссылки, кроме тех, что в секции .combinations
+            $(document).on('click', 'a, button, [onclick]', function(e) {
+                // Проверяем, находится ли элемент внутри секции .combinations
+                if (!$(this).closest('.combinations').length) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Также отключаем через CSS pointer-events для всех элементов, кроме .combinations
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    /* Отключаем все кнопки и ссылки по умолчанию */
+                    a,
+                    button,
+                    [onclick],
+                    .btn,
+                    .nav-link {
+                        pointer-events: none !important;
+                        cursor: default !important;
+                        opacity: 0.6;
+                    }
+                    
+                    /* Разрешаем клики только в секции .combinations и её дочерних элементах */
+                    .combinations a,
+                    .combinations button,
+                    .combinations [onclick],
+                    .combinations .btn,
+                    .combinations .nav-link,
+                    .combinations * a,
+                    .combinations * button,
+                    .combinations * [onclick],
+                    .combinations * .btn,
+                    .combinations * .nav-link {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                        opacity: 1 !important;
+                    }
+                `)
+                .appendTo('head');
+        });
+    </script>
+    
     <!-- Portal JS with tariff loading -->
     <script src="./files/portal-min.js.Без названия"></script>
 </body>
