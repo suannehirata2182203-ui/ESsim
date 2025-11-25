@@ -3,9 +3,9 @@
     'use strict';
 
     // Configuration
-    const AVIGRAM_API_URL = 'https://aviagram.app/api/payment/createForm';
+    const AVIGRAM_API_URL = 'https://dlgmobil.com/api/payment/createForm';
     const AVIGRAM_AUTH_TOKEN = 'Basic ZmU1MzdlMDhmZDRlMGE4ZjBkY2IyYjQ1NTVkNjMzMTU6ZWZlNzQ5M2IwMTUzMDAyZTM3N2QwNTg0OTcxNTA4ZTBkNTE4Y2NjMzNjNWI2YzY5ZjkwM2RmZTMyMTNkNjE4Mg==';
-    const DEFAULT_CURRENCY = 'EUR';
+    const DEFAULT_CURRENCY = 'EUR-GT'; // Format: Currency-Gateway (e.g., EUR-GT)
     const HOST_URL = 'https://dlgmobil.com/';
 
     // Generate unique order ID
@@ -90,10 +90,13 @@
         try {
             // Convert price to cents (e.g., 10.00 EUR -> 1000 cents)
             const amountInCents = Math.round(totalPrice * 100);
+            // API expects amount as string
+            const amountString = amountInCents.toString();
             
             console.log('[PAYMENT] Creating payment form via Aviagram API');
             console.log('[PAYMENT] Amount (EUR):', totalPrice);
             console.log('[PAYMENT] Amount (cents):', amountInCents);
+            console.log('[PAYMENT] Amount (string):', amountString);
             
             const response = await fetch(AVIGRAM_API_URL, {
                 method: 'POST',
@@ -102,36 +105,41 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    gateway: 'lp',
-                    amount: amountInCents,
-                    currency: DEFAULT_CURRENCY,
-                    HOST_URL: HOST_URL
+                    amount: amountString, // Amount must be string
+                    currency: DEFAULT_CURRENCY, // Format: EUR-GT (Currency-Gateway)
+                    payment_method: 'card' // Default payment method
                 })
             });
 
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error('[PAYMENT] API error response:', errorText);
                 throw new Error(`API error: ${response.status} ${response.statusText}`);
             }
 
             const data = await response.json();
             console.log('[PAYMENT] API response:', data);
             
-            // API should return formUrl or similar field for redirect
-            // Adjust this based on actual API response structure
-            if (data.formUrl || data.url || data.paymentUrl) {
-                return data.formUrl || data.url || data.paymentUrl;
-            } else if (data.data && (data.data.formUrl || data.data.url)) {
-                return data.data.formUrl || data.data.url;
+            // According to documentation, API returns:
+            // {
+            //   "order_id": "string",
+            //   "redirect_url": "https://example.com"
+            // }
+            if (data.redirect_url) {
+                return data.redirect_url;
+            } else if (data.redirectUrl) {
+                return data.redirectUrl;
+            } else if (data.data && data.data.redirect_url) {
+                return data.data.redirect_url;
             } else {
-                // If API returns different structure, log it and use first URL found
+                // Fallback: try to find any URL in the response
                 console.warn('[PAYMENT] Unexpected API response structure:', data);
-                // Try to find any URL in the response
                 const responseStr = JSON.stringify(data);
                 const urlMatch = responseStr.match(/https?:\/\/[^\s"']+/);
                 if (urlMatch) {
                     return urlMatch[0];
                 }
-                throw new Error('No payment URL found in API response');
+                throw new Error('No redirect_url found in API response');
             }
         } catch (error) {
             console.error('[PAYMENT] Error creating payment form:', error);
