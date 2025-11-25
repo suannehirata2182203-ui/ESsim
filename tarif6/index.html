@@ -48,6 +48,11 @@
                     return true; // Разрешаем клик
                 }
                 
+                // Разрешаем логотип в шапке (navbar-brand)
+                if ($el.hasClass('navbar-brand') || $el.closest('.navbar-brand').length) {
+                    return true; // Разрешаем клик
+                }
+                
                 // Блокируем все остальные клики
                 e.preventDefault();
                 e.stopPropagation();
@@ -111,6 +116,12 @@
                     .btn-minus,
                     .btn-plus,
                     .quantity-controls * {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                    
+                    /* Разрешаем логотип в шапке */
+                    .navbar-brand {
                         pointer-events: auto !important;
                         cursor: pointer !important;
                     }
