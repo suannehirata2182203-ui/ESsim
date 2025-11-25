@@ -1701,7 +1701,7 @@
             $('<style>')
                 .prop('type', 'text/css')
                 .html(`
-                    /* Отключаем все кнопки и ссылки по умолчанию */
+                    /* Отключаем все кнопки и ссылки по умолчанию (без изменения внешнего вида) */
                     a,
                     button,
                     [onclick],
@@ -1709,7 +1709,6 @@
                     .nav-link {
                         pointer-events: none !important;
                         cursor: default !important;
-                        opacity: 0.6;
                     }
                     
                     /* Разрешаем клики только в секции .combinations и её дочерних элементах */
@@ -1725,7 +1724,6 @@
                     .combinations * .nav-link {
                         pointer-events: auto !important;
                         cursor: pointer !important;
-                        opacity: 1 !important;
                     }
                 `)
                 .appendTo('head');
