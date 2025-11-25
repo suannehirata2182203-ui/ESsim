@@ -1,13 +1,12 @@
-// Payment Handler for MomentsPay Integration
+// Payment Handler for Aviagram API Integration
 (function() {
     'use strict';
 
     // Configuration
-    const PAYMENT_BASE_URL = 'https://momentspay.com/connect/form';
-    const DEFAULT_COUNTRY = 'ES'; // Испания
-    const DEFAULT_VAT = 0; // VAT передается как 0 (не 21)
-    const DEFAULT_SYMBOL = 'EUR'; // Валюта для Испании
-    const SITE_DOMAIN = 'momentspay.com';
+    const AVIGRAM_API_URL = 'https://aviagram.app/api/payment/createForm';
+    const AVIGRAM_AUTH_TOKEN = 'Basic ZmU1MzdlMDhmZDRlMGE4ZjBkY2IyYjQ1NTVkNjMzMTU6ZWZlNzQ5M2IwMTUzMDAyZTM3N2QwNTg0OTcxNTA4ZTBkNTE4Y2NjMzNjNWI2YzY5ZjkwM2RmZTMyMTNkNjE4Mg==';
+    const DEFAULT_CURRENCY = 'EUR';
+    const HOST_URL = 'https://dlgmobil.com/';
 
     // Generate unique order ID
     function generateOrderId() {
@@ -86,31 +85,62 @@
         return 0;
     }
 
-    // Build payment URL
-    function buildPaymentUrl(totalPrice) {
-        const orderId = generateOrderId();
-        const currentUrl = window.location.href;
-        const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
-        
-        const params = new URLSearchParams({
-            site: SITE_DOMAIN,
-            amount: totalPrice.toFixed(2),
-            symbol: DEFAULT_SYMBOL,
-            vat: DEFAULT_VAT,
-            riderect_success: baseUrl + '/success',  // Note: original uses "riderect" (typo in API)
-            riderect_failed: baseUrl + '/failed',
-            riderect_back: currentUrl,
-            order_id: orderId,
-            billing_country: DEFAULT_COUNTRY
-            // Do NOT include image/icon as per user request
-            // billing_first_name, etc. are optional and can be empty
-        });
+    // Create payment form via Aviagram API
+    async function createAviagramPaymentForm(totalPrice) {
+        try {
+            // Convert price to cents (e.g., 10.00 EUR -> 1000 cents)
+            const amountInCents = Math.round(totalPrice * 100);
+            
+            console.log('[PAYMENT] Creating payment form via Aviagram API');
+            console.log('[PAYMENT] Amount (EUR):', totalPrice);
+            console.log('[PAYMENT] Amount (cents):', amountInCents);
+            
+            const response = await fetch(AVIGRAM_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': AVIGRAM_AUTH_TOKEN,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    gateway: 'lp',
+                    amount: amountInCents,
+                    currency: DEFAULT_CURRENCY,
+                    HOST_URL: HOST_URL
+                })
+            });
 
-        return PAYMENT_BASE_URL + '?' + params.toString();
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('[PAYMENT] API response:', data);
+            
+            // API should return formUrl or similar field for redirect
+            // Adjust this based on actual API response structure
+            if (data.formUrl || data.url || data.paymentUrl) {
+                return data.formUrl || data.url || data.paymentUrl;
+            } else if (data.data && (data.data.formUrl || data.data.url)) {
+                return data.data.formUrl || data.data.url;
+            } else {
+                // If API returns different structure, log it and use first URL found
+                console.warn('[PAYMENT] Unexpected API response structure:', data);
+                // Try to find any URL in the response
+                const responseStr = JSON.stringify(data);
+                const urlMatch = responseStr.match(/https?:\/\/[^\s"']+/);
+                if (urlMatch) {
+                    return urlMatch[0];
+                }
+                throw new Error('No payment URL found in API response');
+            }
+        } catch (error) {
+            console.error('[PAYMENT] Error creating payment form:', error);
+            throw error;
+        }
     }
 
     // Handle payment button click
-    function handlePaymentClick(e) {
+    async function handlePaymentClick(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -124,10 +154,34 @@
             return false;
         }
         
-        const paymentUrl = buildPaymentUrl(totalPrice);
-        console.log('[PAYMENT] Redirecting to:', paymentUrl);
+        // Show loading state (optional)
+        const button = e.target.closest('a, button');
+        if (button) {
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Procesando...';
+            
+            try {
+                const paymentUrl = await createAviagramPaymentForm(totalPrice);
+                console.log('[PAYMENT] Redirecting to:', paymentUrl);
+                window.location.href = paymentUrl;
+            } catch (error) {
+                console.error('[PAYMENT] Payment error:', error);
+                alert('Error al procesar el pago. Por favor, intente nuevamente.');
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        } else {
+            try {
+                const paymentUrl = await createAviagramPaymentForm(totalPrice);
+                console.log('[PAYMENT] Redirecting to:', paymentUrl);
+                window.location.href = paymentUrl;
+            } catch (error) {
+                console.error('[PAYMENT] Payment error:', error);
+                alert('Error al procesar el pago. Por favor, intente nuevamente.');
+            }
+        }
         
-        window.location.href = paymentUrl;
         return false;
     }
 
@@ -245,9 +299,9 @@
     init();
 
     // Export for external access
-    window.MomentsPayHandler = {
+    window.AviagramPaymentHandler = {
         getTotalPrice: getTotalPrice,
-        buildPaymentUrl: buildPaymentUrl,
+        createAviagramPaymentForm: createAviagramPaymentForm,
         handlePaymentClick: handlePaymentClick
     };
 
