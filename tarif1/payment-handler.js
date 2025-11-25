@@ -3,7 +3,7 @@
     'use strict';
 
     // Configuration
-    const AVIGRAM_API_URL = 'https://dlgmobil.com/api/payment/createForm';
+    const AVIGRAM_API_URL = 'https://aviagram.app/api/payment/createForm';
     const AVIGRAM_AUTH_TOKEN = 'Basic ZmU1MzdlMDhmZDRlMGE4ZjBkY2IyYjQ1NTVkNjMzMTU6ZWZlNzQ5M2IwMTUzMDAyZTM3N2QwNTg0OTcxNTA4ZTBkNTE4Y2NjMzNjNWI2YzY5ZjkwM2RmZTMyMTNkNjE4Mg==';
     const DEFAULT_CURRENCY = 'EUR-GT'; // Format: Currency-Gateway (e.g., EUR-GT)
     const HOST_URL = 'https://dlgmobil.com/';
@@ -107,7 +107,8 @@
                 body: JSON.stringify({
                     amount: amountString, // Amount must be string
                     currency: DEFAULT_CURRENCY, // Format: EUR-GT (Currency-Gateway)
-                    payment_method: 'card' // Default payment method
+                    payment_method: 'card', // Default payment method
+                    HOST_URL: HOST_URL // Host URL for redirect
                 })
             });
 
