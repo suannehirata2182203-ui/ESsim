@@ -15,10 +15,10 @@ PORT = int(os.environ.get('PORT', 8000))
 DIRECTORY = Path(__file__).parent
 
 # Настройки внешнего прокси (опционально, можно использовать без прокси)
-PROXY_HOST = '109.104.153.193'
-PROXY_PORT = 11709
-PROXY_USER = 'H7TQ9s1USVBPyjuj'
-PROXY_PASS = 'H7TQ9s1USVBPyjuj'
+PROXY_HOST = '185.162.130.86'
+PROXY_PORT = 10000
+PROXY_USER = 'UInVgOaurISMxHUOMkfD'
+PROXY_PASS = 'xnElmQSosaC9sekBD1SRzgqgBWcj2HsZ'
 USE_PROXY = False  # Можно включить если нужен внешний прокси
 
 class Handler(http.server.SimpleHTTPRequestHandler):
