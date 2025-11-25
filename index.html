@@ -2050,38 +2050,128 @@
     <div data-consent-action="vwo" data-consent-required="statistics" id="vwoCode"></div>
     <!-- End VWO Async SmartCode -->
 
+    <!-- Disable all buttons except tariff selection block and logo -->
+    <script>
+        $(document).ready(function() {
+            // Отключаем все кнопки и ссылки, кроме разрешенных
+            $(document).on('click', 'a, button, [onclick]', function(e) {
+                const $el = $(this);
+                
+                // Разрешаем логотип в шапке (navbar-brand)
+                if ($el.hasClass('navbar-brand') || $el.closest('.navbar-brand').length) {
+                    return true; // Разрешаем клик
+                }
+                
+                // Разрешаем все элементы внутри блока выбора тарифов (combinations)
+                if ($el.closest('.combinations').length) {
+                    return true; // Разрешаем клик
+                }
+                
+                // Блокируем все остальные клики
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+            
+            // Также отключаем через CSS pointer-events для всех элементов, кроме разрешенных
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    /* Отключаем все кнопки и ссылки по умолчанию */
+                    a,
+                    button,
+                    [onclick],
+                    .btn,
+                    .nav-link {
+                        pointer-events: none !important;
+                        cursor: default !important;
+                    }
+                    
+                    /* Разрешаем логотип в шапке */
+                    .navbar-brand {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                    
+                    /* Разрешаем все элементы внутри блока выбора тарифов */
+                    .combinations a,
+                    .combinations button,
+                    .combinations [onclick],
+                    .combinations .btn,
+                    .combinations .nav-link {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                `)
+                .appendTo('head');
+        });
+    </script>
+
     <!-- Auto-detect environment and fix image paths -->
     <script>
         (function() {
-            // Определяем, локально ли мы (localhost, 127.0.0.1, или file://)
-            const isLocal = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1' || 
-                           window.location.protocol === 'file:' ||
-                           window.location.hostname === '';
-            
-            if (isLocal) {
-                // Локальная разработка - используем относительные пути
+            // Проверяем загрузку изображения и используем fallback при ошибке
+            function fixBannerImage() {
                 const bannerPicture = document.getElementById('banner-image-combo');
-                if (bannerPicture) {
-                    const sources = bannerPicture.querySelectorAll('source');
-                    const img = bannerPicture.querySelector('img');
-                    
-                    sources.forEach(function(source) {
-                        const localSrc = source.getAttribute('data-local-src');
-                        if (localSrc) {
-                            source.setAttribute('srcset', localSrc);
-                        }
-                    });
-                    
-                    if (img) {
+                if (!bannerPicture) return;
+                
+                const img = bannerPicture.querySelector('img');
+                if (!img) return;
+                
+                // Проверяем, загрузилось ли изображение
+                const testImg = new Image();
+                testImg.onload = function() {
+                    // Изображение загрузилось - оставляем как есть
+                };
+                testImg.onerror = function() {
+                    // Изображение не загрузилось - используем fallback
+                    const localSrc = img.getAttribute('data-local-src');
+                    if (localSrc) {
+                        img.setAttribute('src', localSrc);
+                        // Также обновляем source элементы
+                        const sources = bannerPicture.querySelectorAll('source');
+                        sources.forEach(function(source) {
+                            const localSrcAttr = source.getAttribute('data-local-src');
+                            if (localSrcAttr) {
+                                source.setAttribute('srcset', localSrcAttr);
+                            }
+                        });
+                    }
+                };
+                
+                // Проверяем текущий src изображения
+                testImg.src = img.getAttribute('src') || img.src;
+            }
+            
+            // Запускаем проверку после загрузки DOM
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', fixBannerImage);
+            } else {
+                fixBannerImage();
+            }
+            
+            // Также проверяем после полной загрузки страницы
+            window.addEventListener('load', function() {
+                const img = document.querySelector('#banner-image-combo img');
+                if (img && !img.complete) {
+                    img.onerror = function() {
                         const localSrc = img.getAttribute('data-local-src');
                         if (localSrc) {
                             img.setAttribute('src', localSrc);
+                            const bannerPicture = document.getElementById('banner-image-combo');
+                            if (bannerPicture) {
+                                const sources = bannerPicture.querySelectorAll('source');
+                                sources.forEach(function(source) {
+                                    const localSrcAttr = source.getAttribute('data-local-src');
+                                    if (localSrcAttr) {
+                                        source.setAttribute('srcset', localSrcAttr);
+                                    }
+                                });
+                            }
                         }
-                    }
+                    };
                 }
-            }
-            // На сервере оставляем исходные абсолютные пути
+            });
         })();
     </script>
 
