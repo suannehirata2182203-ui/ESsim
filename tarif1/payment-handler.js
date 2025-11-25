@@ -88,14 +88,12 @@
     // Create payment form via Aviagram API
     async function createAviagramPaymentForm(totalPrice) {
         try {
-            // Convert price to cents (e.g., 10.00 EUR -> 1000 cents)
-            const amountInCents = Math.round(totalPrice * 100);
-            // API expects amount as string
-            const amountString = amountInCents.toString();
+            // API expects amount in EUR with 2 decimal places (e.g., "13.00" not "1300")
+            // Format: "XX.XX" (EUR amount, not cents)
+            const amountString = totalPrice.toFixed(2);
             
             console.log('[PAYMENT] Creating payment form via Aviagram API');
             console.log('[PAYMENT] Amount (EUR):', totalPrice);
-            console.log('[PAYMENT] Amount (cents):', amountInCents);
             console.log('[PAYMENT] Amount (string):', amountString);
             
             const response = await fetch(AVIGRAM_API_URL, {
