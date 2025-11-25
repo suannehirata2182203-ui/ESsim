@@ -3780,5 +3780,125 @@
             });
         });
     </script>
+    
+    <!-- Disable all buttons except payment and function selection buttons -->
+    <script>
+        $(document).ready(function() {
+            // Отключаем все кнопки и ссылки, кроме разрешенных
+            $(document).on('click', 'a, button, [onclick]', function(e) {
+                const $el = $(this);
+                
+                // Разрешаем кнопки оплаты
+                if ($el.attr('id') === 'cta_configurador_contratar' || 
+                    $el.attr('id') === 'config_loquiero' || 
+                    $el.attr('id') === 'cta_configurador_presupuesto') {
+                    return true; // Разрешаем клик
+                }
+                
+                // Разрешаем элементы выбора продуктов
+                if ($el.closest('.product_col').length || 
+                    $el.closest('[data-product-type]').length || 
+                    $el.closest('[data-category]').length ||
+                    $el.hasClass('product_col') ||
+                    $el.attr('data-product-type') || 
+                    $el.attr('data-category')) {
+                    return true; // Разрешаем клик
+                }
+                
+                // Разрешаем чекбоксы и переключатели
+                if ($el.is('input[type="checkbox"]') || 
+                    $el.is('input[type="radio"]') ||
+                    $el.closest('.custom-checkbox').length ||
+                    $el.closest('.custom-switch').length ||
+                    $el.closest('.custom-control').length ||
+                    $el.is('label[for]')) {
+                    return true; // Разрешаем клик
+                }
+                
+                // Разрешаем ссылки "Más info" внутри карточек продуктов
+                if ($el.text().trim() === 'Más info' && 
+                    ($el.closest('.product_col').length || $el.closest('.card').length)) {
+                    return true; // Разрешаем клик
+                }
+                
+                // Разрешаем кнопки количества (если есть)
+                if ($el.hasClass('btn-quantity') || 
+                    $el.hasClass('quantity-btn') ||
+                    $el.hasClass('btn-minus') ||
+                    $el.hasClass('btn-plus') ||
+                    $el.closest('.quantity-controls').length) {
+                    return true; // Разрешаем клик
+                }
+                
+                // Блокируем все остальные клики
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+            
+            // Также отключаем через CSS pointer-events для всех элементов, кроме разрешенных
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    /* Отключаем все кнопки и ссылки по умолчанию */
+                    a,
+                    button,
+                    [onclick],
+                    .btn,
+                    .nav-link {
+                        pointer-events: none !important;
+                        cursor: default !important;
+                    }
+                    
+                    /* Разрешаем кнопки оплаты */
+                    #cta_configurador_contratar,
+                    #config_loquiero,
+                    #cta_configurador_presupuesto {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                    
+                    /* Разрешаем элементы выбора продуктов */
+                    .product_col,
+                    [data-product-type],
+                    [data-category],
+                    .product_col *,
+                    [data-product-type] *,
+                    [data-category] * {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                    
+                    /* Разрешаем чекбоксы и переключатели */
+                    input[type="checkbox"],
+                    input[type="radio"],
+                    .custom-checkbox,
+                    .custom-switch,
+                    .custom-control,
+                    label[for] {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                    
+                    /* Разрешаем ссылки "Más info" в карточках */
+                    .product_col a,
+                    .card a {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                    
+                    /* Разрешаем кнопки количества */
+                    .btn-quantity,
+                    .quantity-btn,
+                    .btn-minus,
+                    .btn-plus,
+                    .quantity-controls * {
+                        pointer-events: auto !important;
+                        cursor: pointer !important;
+                    }
+                `)
+                .appendTo('head');
+        });
+    </script>
 
 </body></html>
