@@ -725,23 +725,23 @@ $( document ).ready(function() {
                 
                 // ПРЯМАЯ ПРОВЕРКА ПО ПАРАМЕТРАМ URL
                 if (href.includes('movil=1581-1581') || href.includes('movil=1581')) {
-                    $link.attr('href', '/tarif4/index.html');
+                    $link.attr('href', '/combina-telefonia-internet4/index.html');
                     return;
                 }
                 if (href.includes('movil=1562') || href.includes('movil=1326')) {
-                    $link.attr('href', '/tarif2/index.html');
+                    $link.attr('href', '/combina-telefonia-internet2/index.html');
                     return;
                 }
                 if (href.includes('movil=1561') || href.includes('movil=1286')) {
-                    $link.attr('href', '/tarif1/index.html');
+                    $link.attr('href', '/combina-telefonia-internet1/index.html');
                     return;
                 }
                 if (href.includes('movil=1580') || href.includes('movil=1311')) {
-                    $link.attr('href', '/tarif3/index.html');
+                    $link.attr('href', '/combina-telefonia-internet3/index.html');
                     return;
                 }
                 if (href.includes('movil=1582-1582-1582') || href.includes('movil=1582')) {
-                    $link.attr('href', '/tarif5/index.html');
+                    $link.attr('href', '/combina-telefonia-internet5/index.html');
                     return;
                 }
                 
@@ -767,25 +767,25 @@ $( document ).ready(function() {
         
         // ПРОСТО: Ищем точное совпадение цены в тексте карточки
         if (cardText.includes('22 €/mes') || cardText.includes('22€/mes') || cardText.match(/22\s*€\/mes/i)) {
-            return '/tarif4/index.html';
+            return '/combina-telefonia-internet4/index.html';
         }
         if (cardText.includes('13 €/mes') || cardText.includes('13€/mes') || cardText.match(/13\s*€\/mes/i)) {
-            return '/tarif1/index.html';
+            return '/combina-telefonia-internet1/index.html';
         }
         if (cardText.includes('15 €/mes') || cardText.includes('15€/mes') || cardText.match(/15\s*€\/mes/i)) {
-            return '/tarif2/index.html';
+            return '/combina-telefonia-internet2/index.html';
         }
         if (cardText.includes('18 €/mes') || cardText.includes('18€/mes') || cardText.match(/18\s*€\/mes/i)) {
-            return '/tarif3/index.html';
+            return '/combina-telefonia-internet3/index.html';
         }
         if (cardText.includes('25 €/mes') || cardText.includes('25€/mes') || cardText.match(/25\s*€\/mes/i)) {
-            return '/tarif5/index.html';
+            return '/combina-telefonia-internet5/index.html';
         }
         
         // Fallback: если не нашли цену, проверяем "CREA TU PROPIA COMBINACIÓN"
         const cardTextUpper = cardText.toUpperCase();
         if (cardTextUpper.includes('CREA TU PROPIA') || cardTextUpper.includes('COMBINACIÓN')) {
-            return '/tarif6/index.html';
+            return '/combina-telefonia-internet6/index.html';
         }
         
         return null;
@@ -801,17 +801,17 @@ $( document ).ready(function() {
         
         // Прямая проверка для tarif4 по URL (x2)
         if (href.includes('movil=1581-1581') || href.includes('movil=1581') || href.includes('ilimitodo-x2')) {
-            $link.attr('href', '/tarif4/index.html');
+            $link.attr('href', '/combina-telefonia-internet4/index.html');
             return;
         }
         // Прямая проверка для tarif5 по URL (x3)
         if (href.includes('movil=1582-1582-1582') || href.includes('movil=1582') || href.includes('ilimitodo-x3')) {
-            $link.attr('href', '/tarif5/index.html');
+            $link.attr('href', '/combina-telefonia-internet5/index.html');
             return;
         }
         // Прямая проверка для tarif3 по URL (один ilimitodo, без x2/x3)
         if (href.includes('movil=1580') || href.includes('movil=1311') || (href.includes('ilimitodo') && !href.includes('ilimitodo-x2') && !href.includes('ilimitodo-x3'))) {
-            $link.attr('href', '/tarif3/index.html');
+            $link.attr('href', '/combina-telefonia-internet3/index.html');
             return;
         }
         
@@ -880,27 +880,27 @@ $( document ).ready(function() {
         // ПРЯМАЯ ПРОВЕРКА ПО ПАРАМЕТРАМ URL
         if (href.includes('movil=1581-1581') || href.includes('movil=1581') || href.includes('ilimitodo-x2')) {
             e.preventDefault();
-            window.location.href = '/tarif4/index.html';
+            window.location.href = '/combina-telefonia-internet4/index.html';
             return false;
         }
         if (href.includes('movil=1562') || href.includes('movil=1326')) {
             e.preventDefault();
-            window.location.href = '/tarif2/index.html';
+            window.location.href = '/combina-telefonia-internet2/index.html';
             return false;
         }
         if (href.includes('movil=1561') || href.includes('movil=1286')) {
             e.preventDefault();
-            window.location.href = '/tarif1/index.html';
+            window.location.href = '/combina-telefonia-internet1/index.html';
             return false;
         }
         if (href.includes('movil=1580') || href.includes('movil=1311') || (href.includes('ilimitodo') && !href.includes('ilimitodo-x2') && !href.includes('ilimitodo-x3'))) {
             e.preventDefault();
-            window.location.href = '/tarif3/index.html';
+            window.location.href = '/combina-telefonia-internet3/index.html';
             return false;
         }
         if (href.includes('movil=1582-1582-1582') || href.includes('movil=1582') || href.includes('ilimitodo-x3')) {
             e.preventDefault();
-            window.location.href = '/tarif5/index.html';
+            window.location.href = '/combina-telefonia-internet5/index.html';
             return false;
         }
         

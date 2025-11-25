@@ -6,7 +6,7 @@
 
 ## URL
 
-`http://localhost:8000/tarif2/`
+`http://localhost:8000/combina-telefonia-internet2/`
 
 ## Параметры по умолчанию
 

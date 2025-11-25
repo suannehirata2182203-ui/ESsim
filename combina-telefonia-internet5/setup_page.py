@@ -58,6 +58,6 @@ if os.path.exists(old_folder):
 
 # 8. Copy custom-styles.css
 if not os.path.exists("custom-styles.css"):
-    shutil.copy("../tarif1/custom-styles.css", "custom-styles.css")
+    shutil.copy("../combina-telefonia-internet1/custom-styles.css", "custom-styles.css")
 
 open("success.txt", "w").write("OK")
