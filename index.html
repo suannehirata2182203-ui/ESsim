@@ -210,12 +210,16 @@
                             <div class="col-12 col-lg-7 d-flex flex-column justify-content-between">
                                 <h1 class="title-level2-700 mb-0 pt-4">DIGI, MÓVIL + FIBRA</h1>
                                 <div class="image_combo">
-                                    <picture>
+                                    <picture id="banner-image-combo">
                                         <source media="(max-width: 576px)"
-                                            srcset="/assets/2025.11.4/images/sliders/slider_home_1_combo_mobile.svg">
+                                            srcset="/assets/2025.11.4/images/sliders/slider_home_1_combo_mobile.svg"
+                                            data-local-src="./files/slider_home_1_combo_desktop.svg">
                                         <source media="(min-width: 576px)"
-                                            srcset="/assets/2025.11.4/images/sliders/slider_home_1_combo_desktop.svg">
-                                        <img src="./files/slider_home_1_combo_desktop.svg" alt="DIGI, MÓVIL + FIBRA">
+                                            srcset="/assets/2025.11.4/images/sliders/slider_home_1_combo_desktop.svg"
+                                            data-local-src="./files/slider_home_1_combo_desktop.svg">
+                                        <img src="/assets/2025.11.4/images/sliders/slider_home_1_combo_desktop.svg" 
+                                             data-local-src="./files/slider_home_1_combo_desktop.svg"
+                                             alt="DIGI, MÓVIL + FIBRA">
                                     </picture>
                                 </div>
                                 <div class="links pb-4">
@@ -2045,6 +2049,41 @@
     <!-- Start VWO Async SmartCode -->
     <div data-consent-action="vwo" data-consent-required="statistics" id="vwoCode"></div>
     <!-- End VWO Async SmartCode -->
+
+    <!-- Auto-detect environment and fix image paths -->
+    <script>
+        (function() {
+            // Определяем, локально ли мы (localhost, 127.0.0.1, или file://)
+            const isLocal = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.protocol === 'file:' ||
+                           window.location.hostname === '';
+            
+            if (isLocal) {
+                // Локальная разработка - используем относительные пути
+                const bannerPicture = document.getElementById('banner-image-combo');
+                if (bannerPicture) {
+                    const sources = bannerPicture.querySelectorAll('source');
+                    const img = bannerPicture.querySelector('img');
+                    
+                    sources.forEach(function(source) {
+                        const localSrc = source.getAttribute('data-local-src');
+                        if (localSrc) {
+                            source.setAttribute('srcset', localSrc);
+                        }
+                    });
+                    
+                    if (img) {
+                        const localSrc = img.getAttribute('data-local-src');
+                        if (localSrc) {
+                            img.setAttribute('src', localSrc);
+                        }
+                    }
+                }
+            }
+            // На сервере оставляем исходные абсолютные пути
+        })();
+    </script>
 
 
 
