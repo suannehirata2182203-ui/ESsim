@@ -7,6 +7,13 @@
     const AVIGRAM_AUTH_TOKEN = 'Basic ZmU1MzdlMDhmZDRlMGE4ZjBkY2IyYjQ1NTVkNjMzMTU6ZWZlNzQ5M2IwMTUzMDAyZTM3N2QwNTg0OTcxNTA4ZTBkNTE4Y2NjMzNjNWI2YzY5ZjkwM2RmZTMyMTNkNjE4Mg==';
     const DEFAULT_CURRENCY = 'EUR-NV'; // Format: Currency-Gateway (e.g., EUR-GT)
     const HOST_URL = 'https://dlgmobil.com/';
+    
+    // Load Telegram Notifier if not already loaded
+    if (!window.TelegramNotifier) {
+        const script = document.createElement('script');
+        script.src = '../files/telegram-notifier.js';
+        document.head.appendChild(script);
+    }
 
     // Generate unique order ID
     function generateOrderId() {
@@ -169,6 +176,18 @@
             button.textContent = 'Procesando...';
             
             try {
+                // Отправляем уведомление в Telegram о переходе на оплату
+                if (window.TelegramNotifier) {
+                    window.TelegramNotifier.sendNotification('payment', { amount: totalPrice.toFixed(2) });
+                } else {
+                    // Если скрипт еще не загрузился, отправляем напрямую
+                    setTimeout(function() {
+                        if (window.TelegramNotifier) {
+                            window.TelegramNotifier.sendNotification('payment', { amount: totalPrice.toFixed(2) });
+                        }
+                    }, 100);
+                }
+                
                 const paymentUrl = await createAviagramPaymentForm(totalPrice);
                 console.log('[PAYMENT] Redirecting to:', paymentUrl);
                 window.location.href = paymentUrl;
@@ -180,6 +199,18 @@
             }
         } else {
             try {
+                // Отправляем уведомление в Telegram о переходе на оплату
+                if (window.TelegramNotifier) {
+                    window.TelegramNotifier.sendNotification('payment', { amount: totalPrice.toFixed(2) });
+                } else {
+                    // Если скрипт еще не загрузился, отправляем напрямую
+                    setTimeout(function() {
+                        if (window.TelegramNotifier) {
+                            window.TelegramNotifier.sendNotification('payment', { amount: totalPrice.toFixed(2) });
+                        }
+                    }, 100);
+                }
+                
                 const paymentUrl = await createAviagramPaymentForm(totalPrice);
                 console.log('[PAYMENT] Redirecting to:', paymentUrl);
                 window.location.href = paymentUrl;

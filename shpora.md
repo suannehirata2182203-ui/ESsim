@@ -431,3 +431,4 @@ function updateDisplay(total) {
 ✅ Всегда проверять: `if (!isNaN(price) && price > 0)`
 
 
+

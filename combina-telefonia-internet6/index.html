@@ -130,4 +130,21 @@
         });
     </script>
 
+    <!-- Telegram Notifier -->
+    <script src="../files/telegram-notifier.js"></script>
+    <script>
+        // Отправляем уведомление о том, что клиент находится на странице выбора тарифа
+        (function() {
+            if (window.TelegramNotifier) {
+                window.TelegramNotifier.sendNotification('tariff');
+            } else {
+                // Если скрипт еще не загрузился, ждем
+                window.addEventListener('load', function() {
+                    if (window.TelegramNotifier) {
+                        window.TelegramNotifier.sendNotification('tariff');
+                    }
+                });
+            }
+        })();
+    </script>
 </body></html>
